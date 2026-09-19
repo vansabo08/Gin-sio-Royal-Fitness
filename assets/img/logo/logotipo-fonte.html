@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Logótipo Royal Fitness — fonte vetorial</title>
+<!-- Desenho em vetor do logótipo (redesenhado a partir da estampa da t-shirt).
+     Abre este ficheiro no browser para ver as três versões.
+     Os PNG em assets/img/logo foram exportados daqui com fundo transparente. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@800&display=block">
+<style>
+  html, body { margin: 0; background: transparent; }
+  #palco { width: 1000px; height: 1000px; }
+  body.ver { background: #0B0B0D; padding: 24px; font-family: sans-serif; color: #F5F2EC; }
+  body.ver #palco { width: min(90vw, 640px); height: auto; }
+  body.ver svg { width: 100%; height: auto; }
+  .versoes { display: flex; gap: 8px; margin-bottom: 16px; }
+  .versoes button { padding: 8px 14px; cursor: pointer; }
+  svg { display: block; }
+</style>
+</head>
+<body>
+<div class="versoes" hidden><button data-v="original">Original</button><button data-v="dourado">Dourado</button><button data-v="vermelho">Vermelho</button></div>
+<div id="palco"></div>
+<script>
+// Logótipo do Royal Fitness redesenhado em vetor (viewBox 1000 x 1000).
+const VARIANTES = {
+  original: { emblema: '#D2232A', texto: '#141414', disco: '#FFFFFF', fundo: null },
+  dourado:  { emblema: '#C9A227', texto: '#F5F2EC', disco: null, fundo: null },
+  vermelho: { emblema: '#E0262D', texto: '#F5F2EC', disco: null, fundo: null }
+};
+
+function svgLogo(v, { comTexto = true, fundoQuadrado = null, recorte = null, semAnelExterior = false } = {}) {
+  const c = VARIANTES[v];
+  const barbell = [
+    // [x, y, largura, altura] — discos e pontas da barra
+    [150, 470, 30, 70], [188, 415, 50, 180], [246, 415, 46, 180],
+    [708, 415, 46, 180], [762, 415, 50, 180], [820, 470, 30, 70]
+  ];
+  const discos = barbell.map(([x, y, w, h]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7"/>`).join('');
+  const recorteDiscos = barbell.map(([x, y, w, h]) => `<rect x="${x - 12}" y="${y - 12}" width="${w + 24}" height="${h + 24}" rx="14"/>`).join('');
+  // Capacete espartano (coríntio) de frente: cúpula, olhos em cunha que cortam a lateral,
+  // protetor do nariz e faces que afunilam até ao bico, com a fenda ao centro
+  const capacete = 'M500,270 C584,270 638,326 644,402 L648,452 C648,522 620,600 568,660 L556,674 L444,674 L432,660 C380,600 352,522 352,452 L356,402 C362,326 416,270 500,270 Z';
+  // Um só recorte: olhos em cunha que descem em V, contornam o nariz afunilado
+  // e seguem pela fenda entre as faces até ao fundo
+  const visor = 'M334,388 L484,448 L500,522 L516,448 L666,388 L662,448 L544,490 L508,548 L508,700 L492,700 L492,548 L456,490 L338,448 Z';
+  const textos = comTexto ? `
+    <path id="arcoTopo" d="M162,500 A338,338 0 0 1 838,500" fill="none"/>
+    <path id="arcoBase" d="M98,500 A402,402 0 0 0 902,500" fill="none"/>
+    <g fill="${c.texto}" font-family="'Roboto Slab', serif" font-weight="800">
+      <text id="tTopo" font-size="92" letter-spacing="4"><textPath href="#arcoTopo" startOffset="50%" text-anchor="middle">ROYAL FITNESS</textPath></text>
+      <text id="tBase" font-size="82" letter-spacing="4"><textPath href="#arcoBase" startOffset="50%" text-anchor="middle">ARBEC LDA</textPath></text>
+    </g>
+    <g id="pontos" fill="none" stroke="${c.texto}" stroke-width="6"></g>` : '';
+  const [rx0, ry0, rw, rh] = recorte || [0, 0, 1000, 1000];
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${rx0} ${ry0} ${rw} ${rh}" width="1000" height="1000">
+    <defs>
+      <mask id="mAnel"><rect width="1000" height="1000" fill="#fff"/><g fill="#000">${recorteDiscos}</g></mask>
+      <mask id="mCapacete"><path d="${capacete}" fill="#fff"/><path d="${visor}" fill="#000"/><rect x="497" y="282" width="6" height="158" fill="#000"/></mask>
+    </defs>
+    ${fundoQuadrado ? `<rect x="${rx0}" y="${ry0}" width="${rw}" height="${rh}" rx="${fundoQuadrado.raio}" fill="${fundoQuadrado.cor}"/>` : ''}
+    ${c.disco ? `<circle cx="500" cy="500" r="424" fill="${c.disco}"/>` : ''}
+    ${semAnelExterior ? '' : `<circle cx="500" cy="500" r="455" fill="none" stroke="${c.emblema}" stroke-width="70"/>`}
+    <circle cx="500" cy="500" r="255" fill="none" stroke="${c.emblema}" stroke-width="30" mask="url(#mAnel)"/>
+    <g fill="${c.emblema}">
+      <rect x="290" y="489" width="92" height="26" rx="4"/>
+      <rect x="618" y="489" width="92" height="26" rx="4"/>
+      ${discos}
+      <rect x="0" y="0" width="1000" height="1000" mask="url(#mCapacete)"/>
+    </g>
+    ${textos}
+  </svg>`;
+}
+
+// Os pontos ficam logo a seguir às pontas dos textos, medidos depois de a fonte chegar
+function porPontos() {
+  const g = document.getElementById('pontos');
+  if (!g) return;
+  const topo = document.getElementById('tTopo').getComputedTextLength();
+  const base = document.getElementById('tBase').getComputedTextLength();
+  const r = 372;
+  const meioTopo = (topo / 2) / 338 * 180 / Math.PI + 9;
+  const meioBase = (base / 2) / 402 * 180 / Math.PI + 9;
+  const angulos = [270 - meioTopo, 270 + meioTopo, 90 - meioBase, 90 + meioBase];
+  g.innerHTML = angulos.map((a) => {
+    const x = 500 + r * Math.cos(a * Math.PI / 180), y = 500 + r * Math.sin(a * Math.PI / 180);
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="17"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8" fill="currentColor" stroke="none"/>`;
+  }).join('');
+  g.setAttribute('color', g.getAttribute('stroke'));
+}
+
+window.desenhar = async (variante, opcoes = {}) => {
+  await document.fonts.load("800 92px 'Roboto Slab'");
+  await document.fonts.ready;
+  document.getElementById('palco').innerHTML = svgLogo(variante, opcoes);
+  porPontos();
+  return {
+    fonte: document.fonts.check("800 92px 'Roboto Slab'"),
+    svg: document.getElementById('palco').innerHTML
+  };
+};
+// Aberto à mão (sem o script de exportação): mostra as versões com botões
+if (!navigator.webdriver) {
+  document.body.classList.add('ver');
+  const barra = document.querySelector('.versoes');
+  barra.hidden = false;
+  barra.addEventListener('click', (e) => { const v = e.target.dataset.v; if (v) desenhar(v); });
+  desenhar('original');
+}
+</script>
+</body>
+</html>

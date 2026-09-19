@@ -310,9 +310,10 @@ section[id] { scroll-margin-top: var(--nav-h); }
   flex-shrink: 0;
 }
 .logo__marca {
-  width: 30px;
-  height: 30px;
-  color: var(--dourado);
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  transition: width 0.8s var(--ease), height 0.8s var(--ease);
 }
 .logo__texto {
   font-family: var(--f-titulo);
@@ -324,7 +325,8 @@ section[id] { scroll-margin-top: var(--nav-h); }
 }
 .logo__texto span { color: var(--dourado); }
 @media (min-width: 1024px) {
-  .logo__marca { width: 36px; height: 36px; }
+  .logo__marca { width: 60px; height: 60px; }
+  .cabecalho--solido .logo__marca { width: 54px; height: 54px; }
   .logo__texto { font-size: 2rem; }
 }
 
@@ -1943,6 +1945,8 @@ footer[id] { scroll-margin-top: var(--nav-h); }
   gap: 44px;
   padding-block: 72px 48px;
 }
+.rodape__marca .logo { gap: 16px; }
+.rodape__marca .logo__marca { width: 96px; height: 96px; }
 .rodape__marca p {
   max-width: 30ch;
   margin-top: 18px;
