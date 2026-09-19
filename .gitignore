@@ -1,0 +1,10 @@
+# Ficheiros do sistema
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Dependências (o site não precisa de nenhuma; só por precaução)
+node_modules/
+
+# Vídeo original tal como veio; o site usa a cópia em assets/video/hero.mp4
+People_training_in_luxury_gym_20260916104057.mp4
